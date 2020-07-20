@@ -46,5 +46,13 @@ module.exports = {
             .select(fields)
             .where('category.id', id)
             .innerJoin('food', 'category.id', 'food.category_id');
+    },
+
+    addCategory: async function (name) {
+        const trx = await db.transaction();
+        const category = await db('category')
+            .transacting(trx).insert(name, 'id');
+        await trx.commit();
+        return category[0];
     }
 };
