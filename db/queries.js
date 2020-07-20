@@ -13,6 +13,26 @@ module.exports = {
             .innerJoin('category', 'food.category_id', 'category.id');
     },
 
+    getFood: async function (id) {
+        const fields = ['food.id', 'food.name', 'food.description',
+            'food.price', 'food.image', 'food.calories',
+            'category.id as category_id', 'category.name as category_name'
+        ];
+        return await db('food')
+            .select(fields)
+            .where('food.id', id)
+            .innerJoin('category', 'food.category_id', 'category.id')
+            .first();
+    },
+
+    addFood: async function (food) {
+        const trx = await db.transaction();
+        const food_db = await db('food')
+            .transacting(trx).insert(food, 'id');
+        await trx.commit();
+        return food_db[0];
+    },
+
     listCategories: async function () {
         return await db('category');
     },
