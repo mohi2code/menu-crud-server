@@ -41,6 +41,14 @@ module.exports = {
         return food[0];
     },
 
+    deleteFood: async function (id) {
+        const trx = await db.transaction();
+        const food = await db('food')
+            .transacting(trx).delete().where('id', id);
+        await trx.commit();
+        return food;
+    },
+
     listCategories: async function () {
         return await db('category');
     },
