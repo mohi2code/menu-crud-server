@@ -6,12 +6,15 @@ const {
     v4: uuidv4
 } = require('uuid');
 const {
-    validateId
+    validateId,
+    validateCategory
 } = require('./middleware');
 const {
     listCategories,
     getCategory,
-    addCategory
+    addCategory,
+    updateCategory
+
 } = require('../db/queries');
 
 router.get('/', async (req, res, next) => {
@@ -40,18 +43,21 @@ router.get('/:id', validateId, async (req, res, next) => {
     }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', validateCategory, async (req, res, next) => {
     try {
-        if (typeof req.body.name == 'string') {
-            if (req.body.name.trim() == '')
-                throw new Error('Invalid name property ! ☠');
-        } else {
-            throw new Error('Invalid name property ! ☠');
-        }
-        const id = await addCategory({
+        const category = await addCategory({
             id: uuidv4(),
             name: req.body.name
         });
+        res.json(category);
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.put('/:id', validateId, validateCategory, async (req, res, next) => {
+    try {
+        const id = await updateCategory(req.params.id, req.body);
         res.json({
             id
         });

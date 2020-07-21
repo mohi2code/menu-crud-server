@@ -49,7 +49,22 @@ function validateFood(req, res, next) {
     }
 }
 
+function validateCategory(req, res, next) {
+    try {
+        if (typeof req.body.name == 'string') {
+            if (req.body.name.trim() == '')
+                throw new Error('Invalid name property ! ☠');
+        } else {
+            throw new Error('Invalid name property ! ☠');
+        }
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports = {
     validateId,
-    validateFood
+    validateFood,
+    validateCategory
 }

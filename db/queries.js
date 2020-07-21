@@ -51,7 +51,15 @@ module.exports = {
     addCategory: async function (name) {
         const trx = await db.transaction();
         const category = await db('category')
-            .transacting(trx).insert(name, 'id');
+            .transacting(trx).insert(name, '*');
+        await trx.commit();
+        return category[0];
+    },
+
+    updateCategory: async function (id, name) {
+        const trx = await db.transaction();
+        const category = await db('category')
+            .transacting(trx).update(name, 'id').where('id', id);
         await trx.commit();
         return category[0];
     }
