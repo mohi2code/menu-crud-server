@@ -33,6 +33,14 @@ module.exports = {
         return food_db[0];
     },
 
+    updateFood: async function (id, category_update) {
+        const trx = await db.transaction();
+        const food = await db('food')
+            .transacting(trx).update(category_update, '*').where('id', id);
+        await trx.commit();
+        return food[0];
+    },
+
     listCategories: async function () {
         return await db('category');
     },

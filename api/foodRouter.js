@@ -12,7 +12,8 @@ const {
 const {
     listFood,
     getFood,
-    addFood
+    addFood,
+    updateFood
 } = require('../db/queries')
 
 router.get('/', async (req, res, next) => {
@@ -50,6 +51,16 @@ router.post('/', validateFood, async (req, res, next) => {
         res.json({
             id
         });
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.put('/:id', validateId, validateFood, async (req, res, next) => {
+    try {
+        delete req.body['id'];
+        const category = await updateFood(req.params.id, req.body);
+        res.json(category);
     } catch (error) {
         next(error);
     }
