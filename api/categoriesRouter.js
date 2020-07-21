@@ -13,8 +13,8 @@ const {
     listCategories,
     getCategory,
     addCategory,
-    updateCategory
-
+    updateCategory,
+    deleteCategory
 } = require('../db/queries');
 
 router.get('/', async (req, res, next) => {
@@ -57,10 +57,17 @@ router.post('/', validateCategory, async (req, res, next) => {
 
 router.put('/:id', validateId, validateCategory, async (req, res, next) => {
     try {
-        const id = await updateCategory(req.params.id, req.body);
-        res.json({
-            id
-        });
+        const category = await updateCategory(req.params.id, req.body);
+        res.json(category);
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.delete('/:id', validateId, async (req, res, next) => {
+    try {
+        const category = await deleteCategory(req.params.id);
+        res.json(category);
     } catch (error) {
         next(error);
     }

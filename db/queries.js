@@ -59,8 +59,18 @@ module.exports = {
     updateCategory: async function (id, name) {
         const trx = await db.transaction();
         const category = await db('category')
-            .transacting(trx).update(name, 'id').where('id', id);
+            .transacting(trx).update(name, '*').where('id', id);
         await trx.commit();
         return category[0];
-    }
+    },
+
+    deleteCategory: async function (id) {
+        const trx = await db.transaction();
+        await db('food').transacting(trx)
+            .delete().where('category_id', id);
+        const category = await db('category')
+            .transacting(trx).delete().where('id', id);
+        await trx.commit();
+        return category;
+    },
 };
