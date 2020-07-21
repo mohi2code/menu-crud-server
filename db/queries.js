@@ -10,7 +10,10 @@ module.exports = {
         ];
         return await db('food')
             .select(fields)
-            .innerJoin('category', 'food.category_id', 'category.id');
+            .innerJoin('category', 'food.category_id', 'category.id')
+            .orderBy([{
+                column: 'food.category_id'
+            }]);
     },
 
     getFood: async function (id) {
@@ -50,7 +53,8 @@ module.exports = {
     },
 
     listCategories: async function () {
-        return await db('category');
+        return await db('category')
+            .orderBy('id');
     },
 
     getCategory: async function (id) {
