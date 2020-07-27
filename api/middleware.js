@@ -1,4 +1,7 @@
 const Joi = require('@hapi/joi');
+const {
+    func
+} = require('@hapi/joi');
 
 function validateId(req, res, next) {
     try {
@@ -81,9 +84,25 @@ async function validateRegister(req, res, next) {
     }
 }
 
+async function validateLogin(req, res, next) {
+    try {
+        const schema = Joi.object({
+            email: Joi.string().email().required(),
+            password: Joi.string()
+                .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+        }).with('email', 'password');
+        await schema.validateAsync(req.body);
+
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports = {
     validateId,
     validateFood,
     validateCategory,
-    validateRegister
+    validateRegister,
+    validateLogin
 }

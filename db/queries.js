@@ -109,5 +109,13 @@ module.exports = {
             .insert(user, 'email');
         await trx.commit();
         return user_db[0];
+    },
+
+    updateUser: async function (id, body) {
+        const trx = await db.transaction();
+        const user = await db('user_account')
+            .transacting(trx).update(body, '*').where('id', id);
+        await trx.commit();
+        return user[0];
     }
 };
