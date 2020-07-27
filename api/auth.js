@@ -9,16 +9,11 @@ const {
     v4: uuidv4
 } = require('uuid');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const {
     validateRegister,
     validateLogin
 } = require('./middleware');
-const {
-    func
-} = require('@hapi/joi');
-const {
-    response
-} = require('express');
 
 router.post('/register', validateRegister, async (req, res, next) => {
     try {
@@ -52,12 +47,14 @@ router.post('/login', validateLogin, async (req, res, next) => {
             last_login: new Date().toISOString()
         });
 
-        res.cookie('user_id', update.id, {
-            signed: true,
-            httpOnly: true
+        const token = jwt.sign({
+            email: update.email
+        }, process.env.JWT_SECRET, {
+            expiresIn: '1h'
         });
+
         res.json({
-            login: true
+            token
         });
     } catch (error) {
         next(error);
