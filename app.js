@@ -6,6 +6,7 @@ const logger = require('morgan');
 
 const foodRouter = require('./api/foodRouter');
 const categoriesRouter = require('./api/categoriesRouter');
+const authRouter = require('./api/auth');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.urlencoded({
 }));
 app.use(cookieParser());
 
+app.use('/auth', authRouter);
 app.use('/food', foodRouter);
 app.use('/categories', categoriesRouter);
 

@@ -1,3 +1,7 @@
+const {
+    func
+} = require('@hapi/joi');
+
 const env = process.env.NODE_ENV || 'development';
 const config = require('../knexfile')[env];
 const db = require('knex')(config);
@@ -93,4 +97,17 @@ module.exports = {
         await trx.commit();
         return category;
     },
+
+    getUserByEmail: async function (email) {
+        return (await db('user_account').where('email', email))[0];
+    },
+
+    addUser: async function (user) {
+        const trx = await db.transaction();
+        const user_db = await db('user_account')
+            .transacting(trx)
+            .insert(user, 'email');
+        await trx.commit();
+        return user_db[0];
+    }
 };

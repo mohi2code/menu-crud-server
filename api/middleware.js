@@ -1,3 +1,5 @@
+const Joi = require('@hapi/joi');
+
 function validateId(req, res, next) {
     try {
         const valid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(req.params.id);
@@ -63,8 +65,25 @@ function validateCategory(req, res, next) {
     }
 }
 
+async function validateRegister(req, res, next) {
+    try {
+        const schema = Joi.object({
+            email: Joi.string().email().required(),
+            password: Joi.string()
+                .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+            password_repeat: Joi.ref('password'),
+        }).with('password', 'password_repeat');
+        await schema.validateAsync(req.body);
+
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports = {
     validateId,
     validateFood,
-    validateCategory
+    validateCategory,
+    validateRegister
 }

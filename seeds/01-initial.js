@@ -3,8 +3,8 @@ const {
 } = require('uuid');
 
 exports.seed = async function (knex) {
-  await knex('category').del();
   await knex('food').del();
+  await knex('category').del();
 
   const category_ids = {
     Pizzas: uuidv4(),
