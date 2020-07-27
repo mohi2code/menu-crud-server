@@ -49,9 +49,7 @@ router.post('/login', validateLogin, async (req, res, next) => {
 
         const token = jwt.sign({
             email: update.email
-        }, process.env.JWT_SECRET, {
-            expiresIn: '1h'
-        });
+        }, process.env.JWT_SECRET);
 
         res.json({
             token

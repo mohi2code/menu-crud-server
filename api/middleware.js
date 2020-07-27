@@ -1,7 +1,8 @@
-const Joi = require('@hapi/joi');
 const {
-    func
-} = require('@hapi/joi');
+    getUserByEmail
+} = require('../db/queries');
+const Joi = require('@hapi/joi');
+const jwt = require('jsonwebtoken');
 
 function validateId(req, res, next) {
     try {
@@ -99,10 +100,34 @@ async function validateLogin(req, res, next) {
     }
 }
 
+async function isLogin(req, res, next) {
+    try {
+        if (req.headers['authorization']) {
+            const token = req.headers['authorization'].split(' ')[1];
+            if (!token)
+                throw new Error('Unauthorized 🔒');
+            await jwt.verify(token, process.env.JWT_SECRET, async (err, token) => {
+                if (err)
+                    throw new Error('Invalid Token ☠');
+                const user = await getUserByEmail(token.email);
+                if (!user)
+                    throw new Error('Unauthorized 🔒');
+                next();
+            });
+        } else {
+            throw new Error('Unauthorized no token specified 🔒');
+        }
+    } catch (error) {
+        error.status = 401;
+        next(error);
+    }
+}
+
 module.exports = {
     validateId,
     validateFood,
     validateCategory,
     validateRegister,
-    validateLogin
+    validateLogin,
+    isLogin
 }
