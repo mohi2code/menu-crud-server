@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "pm2 start ./bin/www",
+    "start": "node start ./bin/www",
     "dev": "nodemon -r dotenv/config ./bin/www",
-    "server": "pm2 start ecosystem.config.js"
+    "migrate": "knex migrate:latest",
+    "seed": "knex seed:run"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
