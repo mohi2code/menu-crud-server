@@ -22,7 +22,7 @@ app.use(express.urlencoded({
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 app.use('/auth', authRouter);
-app.use('/food', foodRouter);
+app.use('/food', isLogin, foodRouter);
 app.use('/categories', isLogin, categoriesRouter);
 
 // catch 404 and forward to error handler
